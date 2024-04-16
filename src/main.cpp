@@ -1,7 +1,7 @@
 #include <iostream>
 #include <raylib.h>
-#include <raymath.h>
 #include "player.hpp"
+#include "world.hpp"
 
 #define Vector2_Zero (Vector2){0,0}
 
@@ -16,16 +16,21 @@ int main() {
   Player player((Vector2){1280/2,720/2},(Camera2D){0,0,0,0,0,1.0f},(Vector2){50,50},RED);
   player.Camera.offset = (Vector2){p720X/2,p720Y/2};
 
+  World world(1);
+
+  world.Save();
+
   while (!WindowShouldClose()) {
     float Delta = GetFrameTime()*GetFPS();
 
     player.Move(Delta);
-    player.Camera.target.x = Lerp(player.Camera.target.x,player.Position.x,0.01 * Delta);
-    player.Camera.target.y = Lerp(player.Camera.target.y,player.Position.y,0.01 * Delta);    
+    player.SmoothCamera(Delta); 
 
     BeginDrawing();
     ClearBackground(BLACK);
     BeginMode2D(player.Camera);
+
+    world.Draw();
 
     DrawLineEx(Vector2_Zero, (Vector2){350,350},10,YELLOW);
     player.Draw();

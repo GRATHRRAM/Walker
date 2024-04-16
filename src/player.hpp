@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 
 #include <raylib.h>
+#include <raymath.h>
 
 class Player {
     public:
@@ -17,6 +18,7 @@ class Player {
     ~Player();
     void Draw();
     void Move(float Delta);
+    void SmoothCamera(float Delta);
 };
 
 Player::Player(Vector2 Position,Camera2D Camera,Vector2 Size,Color PColor) {
@@ -24,7 +26,7 @@ Player::Player(Vector2 Position,Camera2D Camera,Vector2 Size,Color PColor) {
     Player::Camera   = Camera;
     Player::Size     = Size;
     Player::PColor   = PColor; 
-    Player::Speed    = 2;
+    Player::Speed    = 4;
 }
 
 Player::~Player() {}
@@ -40,4 +42,8 @@ void Player::Move(float Delta) {
     if(IsKeyDown(KEY_S)) Player::Position.y += Player::Speed * Delta;
 }
 
+void Player::SmoothCamera(float Delta) {
+    Player::Camera.target.x = Lerp(Player::Camera.target.x,Player::Position.x,0.05 * Delta);
+    Player::Camera.target.y = Lerp(Player::Camera.target.y,Player::Position.y,0.05 * Delta); 
+}
 #endif //!PLAYER_HPP
